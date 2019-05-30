@@ -1,0 +1,21 @@
+{
+  "name": "wp19-node-41-order",
+  "version": "1.4.0",
+  "private": true,
+  "scripts": {
+    "test": "set DEBUG=wp19-node-41-order:* & nodemon ./bin/www",
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.3",
+    "debug": "^2.6.9",
+    "express": "^4.16.0",
+    "express-session": "^1.16.1",
+    "http-errors": "^1.6.2",
+    "memorystore": "^1.6.1",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.19.0",
+    "pug": "^2.0.3",
+    "sqlite3": "^4.0.8"
+  }
+}

@@ -1,0 +1,126 @@
+a {
+  color: #00B7FF;
+}
+
+body {
+  width: 90%;
+  margin: 1em auto;
+  text-align: center;
+  background-color: black;
+  color: white;
+}
+
+table.menu {
+  margin: 1em auto;
+}
+
+th.menu {
+  border-top: solid thin lightgray;
+  border-bottom: solid thin lightgray;
+  padding: 4px 0.5em;
+}
+
+th.empty {
+  border: none;
+}
+
+td.menu {
+  border-bottom: solid thin lightgray;
+  padding: 4px 0.5em;
+}
+
+.narrowInput {
+  width: 4em;
+}
+
+.fillWidth {
+  width: 100%;
+}
+
+.right {
+  text-align: right;
+}
+
+.center {
+  text-align: center;
+}
+
+.left {
+  text-align: left;
+}
+
+table.account {
+  width: 32em;
+  margin: 1em auto;
+}
+
+table.login {
+  width: 16em;
+  margin: 1em auto;
+}
+
+table.nav {
+  padding: 0px;
+  margin: 0px;
+  width: 100%;
+}
+
+tr.nav {
+  padding: 0px;
+  margin: 0px;
+  border: none;
+}
+
+td.nav {
+  padding: 0px 1em;
+  border: none;
+  width: 25%;
+}
+
+a.navItem {
+  font: bold;
+  text-decoration: none;
+  background-color: #EEEEEE;
+  color: #333333;
+  padding: 2px 6px 2px 6px;
+  border-top: 1px solid #CCCCCC;
+  border-right: 1px solid #333333;
+  border-bottom: 1px solid #333333;
+  border-left: 1px solid #CCCCCC;
+}
+
+.errorMessage {
+  font-weight: bolder;
+  color: red;
+}
+
+.infoMessage {
+  font-weight: bolder;
+  color: white;
+}
+
+.userInfo {
+  font-weight: bold;
+  color: lightyellow;
+  margin-right: 1em;
+}
+
+a.userInfo {
+  text-decoration: none;
+}
+
+tr.shown {
+  visibility: visible;
+}
+
+tr.hidden {
+  visibility: collapse;
+}
+
+div.inline {
+  display: inline;
+}
+
+div.disappear {
+  display: none;
+}

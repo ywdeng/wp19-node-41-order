@@ -1,0 +1,58 @@
+extends layout-nonav
+
+block scripts
+  script(src='/javascripts/user-edit.js')
+
+block content
+  if errMsg
+    h2.center.errorMessage= errMsg
+  else if infoMsg
+    h2.center.infoMessage= infoMsg
+  else
+    h2.center 儲存帳號資訊
+  form(action='/user', method='post', onsubmit="return validateInput()")
+    if pageAfterLogin
+      input(type='hidden', name='pageAfterLogin', value=pageAfterLogin)
+    table.account
+      tbody
+        tr
+          th.right 帳號：
+          td.left
+            if account
+              input.fillWidth(type='text', id='account', name='account', required='true', value=account, readonly='true')
+            else
+              input.fillWidth(type='text', id='account', name='account', required='true', placeholder='帳號或電話號碼', autofocus='true')
+        tr
+          th.right 密碼：
+          td.left
+            input.fillWidth(type='password', id='password1', name='passwd', required='true', placeholder='密碼至少6碼，不可空格')
+        tr
+          th.right 確認密碼：
+          td.left
+            input.fillWidth(type='password', id='password2', name='passwd2', required='true', placeholder='請再次輸入密碼，以為確認')
+        tr
+          th.right 客戶名稱：
+          td.left
+            if name
+              input.fillWidth(type='text', id='custName', name='custName', required='true', value=name)
+            else
+              input.fillWidth(type='text', id='custName', name='custName', required='true', value=name, placeholder='姓名或公司名稱', autofocus='true')
+        tr
+          th.right 聯絡電話：
+          td.left
+            if tel
+              input.fillWidth(type='tel', id='tel', name='tel', required='true', value=tel)
+            else
+              input.fillWidth(type='tel', id='tel', name='tel', required='true', , placeholder='電話號碼')
+        tr
+          th.right 送貨地址：
+          td.left
+            if addr
+              input.fillWidth(type='text', id='addr', name='addr', required='true', value=addr)
+            else
+              input.fillWidth(type='text', id='addr', name='addr', required='true', placeholder='門牌號碼')
+    p.center
+      input(type='submit', id="btnOK")
+      | 
+      input(type='reset')
+    

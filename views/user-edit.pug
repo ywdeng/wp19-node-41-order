@@ -1,0 +1,77 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/user-edit.js')
+
+block content
+  if errMsg
+    h2.center.errorMessage= errMsg
+  else if infoMsg
+    h2.center.infoMessage= infoMsg
+  else
+    h2.center 修改帳號資訊
+  form(action='/user/edit', method='post', onsubmit="return validateInput()")
+    if pageAfterLogin
+      input(type='hidden', name='pageAfterLogin', value=pageAfterLogin)
+    table.account
+      tbody
+        tr
+          th.right 帳號：
+          td.left
+            if account
+              input.fillWidth(type='text', id='account', name='account', required='true', value=account, readonly='true')
+            else
+              input.fillWidth(type='text', id='account', name='account', required='true', placeholder='帳號或電話號碼', autofocus='true')
+          td.left
+            input(type="checkbox",id="changePassword",name="changePassword",onchange="showPasswordFields()")
+            label(for="changePassword") 更換密碼
+        tr#passwordRow.hidden
+          th.right 密碼：
+          td.left(colspan="2")
+            input.fillWidth(type='password', id='password1', name='passwd', placeholder='密碼至少6碼，不可空格')
+        tr#passwordRow2.hidden
+          th.right 確認密碼：
+          td.left(colspan="2")
+            input.fillWidth(type='password', id='password2', name='passwd2', placeholder='請再次輸入密碼，以為確認')
+        tr
+          th.right 客戶名稱：
+          td.left(colspan="2")
+            if name
+              input.fillWidth(type='text', id='custName', name='custName', required='true', value=name)
+            else
+              input.fillWidth(type='text', id='custName', name='custName', required='true', value=name, placeholder='姓名或公司名稱', autofocus='true')
+        tr
+          th.right 聯絡電話：
+          td.left(colspan="2")
+            if tel
+              input.fillWidth(type='tel', id='tel', name='tel', required='true', value=tel)
+            else
+              input.fillWidth(type='tel', id='tel', name='tel', required='true', , placeholder='電話號碼')
+        tr
+          th.right 送貨地址：
+          td.left(colspan="2")
+            if addr
+              input.fillWidth(type='text', id='addr', name='addr', required='true', value=addr)
+            else
+              input.fillWidth(type='text', id='addr', name='addr', required='true', placeholder='門牌號碼')
+        if (user.isAdmin)
+          tr
+            th.right 權限：
+            td.left(colspan="2")
+              if isAdmin
+                input(type='radio', id='isAdminTrue', name='isAdmin', value="1", checked="true")
+                label(for="isAdminTrue") 管理員
+                | 
+                input(type='radio', id='isAdminFalse', name='isAdmin', value="0")
+                label(for="isAdminFalse") 一般使用者
+              else                
+                input(type='radio', id='isAdminTrue', name='isAdmin', value="1")
+                label(for="isAdminTrue") 管理員
+                | 
+                input(type='radio', id='isAdminFalse', name='isAdmin', value="0", checked="true")
+                label(for="isAdminFalse") 一般使用者
+    p.center
+      input(type='submit', id="btnOK")
+      | 
+      input(type='reset')
+    

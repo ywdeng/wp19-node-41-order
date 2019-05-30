@@ -1,0 +1,39 @@
+doctype html
+html
+  head
+    title 網路飲料店
+    link(rel='stylesheet', href='/stylesheets/style.css')   
+    script(src='/javascripts/jquery-3.4.1.js') 
+    script(src='/javascripts/main.js')
+    block styles
+    block scripts
+  body
+    h1.center 網路飲料店
+    hr
+    table.nav
+      tbody
+        tr.nav
+          td.nav.left
+            a.navItem(href="/") 回首頁
+            | 
+            span#sessionCount
+          td.nav.center(colspan='2')
+            a.navItem(href="/menu") 訂購飲料
+            if user
+              | 
+              a.navItem(href="/order") 查看訂單
+            if (user && user.isAdmin)
+              | 
+              a.navItem(href="/user") 帳號管理
+          td.nav.right
+            if user
+              span.userInfo
+                a.userInfo(href="/user/"+user.id)= user.name
+              | 
+              a.navItem(href='/logout') 登出
+            else 
+              a.navItem(href='/login') 登入            
+    hr
+    p
+      | 
+    block content

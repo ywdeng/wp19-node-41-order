@@ -1,0 +1,35 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/user.js')
+
+block content
+  table.menu
+    tbody      
+    tr
+      th.menu 帳號
+      th.menu 客戶名稱
+      th.menu 聯絡電話
+      th.menu 送貨地址
+      th.menu 管理員
+      th.menu
+      | 
+    each u in userList
+      tr
+        td.menu.left= u.id
+        td.menu.left= u.name
+        td.menu.left= u.tel
+        td.menu.left= u.addr
+        td.menu.center
+          if u.isAdmin
+            input(type="checkbox",checked="true",onclick="return false;")
+          else 
+            input(type="checkbox",disabled="true")
+        td.menu.left
+          a(href="/user/" + u.id) 修改
+          | 
+          if (u.id != user.id)
+            a(href="#", onclick="return deleteUser('"+u.id+"');") 刪除
+  
+  form(id="mainForm", action="/user/delete", method="post")
+    input(type="hidden", name="userId", id="userId")

@@ -1,0 +1,36 @@
+extends layout-nonav
+
+block content
+  if errMsg
+    h2.center.errorMessage= errMsg
+  else if infoMsg
+    h2.center.infoMessage= infoMsg
+  else
+    h2.center 登入系統
+  form(action='/login', method='post')
+    if pageAfterLogin
+      input(type='hidden', name='pageAfterLogin', value=pageAfterLogin)
+    table.login
+      tbody
+        tr
+          th.right 帳號：
+          td.left
+            if account
+              input.fillWidth(type='text', id='account', name='account', required='true', value=account, readonly='true')
+            else
+              input.fillWidth(type='text', id='account', name='account', required='true', placeholder='帳號或電話號碼', autofocus='true')
+        tr
+          th.right 密碼：
+          td.left
+            if account
+              input.fillWidth(type='password', id='password', name='passwd', required='true', autofocus='true')
+            else
+              input.fillWidth(type='password', id='password', name='passwd', required='true')
+    p.center
+      input(type='checkbox', id='rememberMe', name='rememberMe')
+      label(for='rememberMe', title='24小時之內不需重新登入') 記住我
+      | 
+      input(type='submit')
+      | 
+      input(type='reset')
+    

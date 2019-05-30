@@ -1,0 +1,86 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/order.js')
+
+block content
+  form(id="mainForm", action="/order/status", method="post")
+    input(type="hidden", name="orderId", value=order.id)
+    input(type="hidden", name="orderUserId", value=order.userId)
+    input(type="hidden", name="originalStatus", value=order.status)
+    if order
+      table.menu
+        tbody
+          tr
+            th.right.empty 訂單編號：
+            th.left.empty(colspan="2")= order.id
+            th.right.empty 日期：
+            th.left.empty(colspan="2")= order.orderDateStr
+          tr
+            th.right.empty 客戶名稱：
+            th.left.empty(colspan="5")           
+              span(title='客戶帳號：'+order.userId)= order.custName
+          tr
+            th.right.empty 聯絡電話：
+            th.left.empty(colspan="5")= order.custTel
+          tr
+            th.right.empty 送貨地址：
+            th.left.empty(colspan="5")= order.custAddr  
+          tr
+            th.menu 品名
+            th.menu 容量
+            th.menu 單價
+            th.menu 數量
+            th.menu 小計
+            th.menu 備註
+          each p in order.items
+            tr
+              td.menu.right= p.name
+              td.menu= p.size
+              td.menu.right= p.price
+              td.menu.right= p.qty
+              td.menu.right= p.sum
+              td.menu.left= p.note
+          tr
+            th.menu.right(colspan="4") 合計：
+            th.menu.right= order.total
+            th.menu 
+          tr
+            td.right.empty(colspan="6")
+              if user.isAdmin              
+                span 訂單狀態：
+                select(name="targetStatus")
+                  each opt in STATUS_OPTIONS
+                    if opt == order.status
+                      option(value=opt,selected='true') #{opt}
+                    else
+                      option(value=opt) #{opt}
+                | 
+                input(type="submit", value="變更狀態")
+              else
+                div#userOrderStatusPanel.inline 訂單狀態： #{order.status}
+                | 
+                div#userCancelOrderPanel.disappear 取消訂單，原因：
+                  input#userCancelOrderReason(type="text", name="note", placeholder="請填寫取消訂單的理由")
+                  | 
+                  input#userCancelOrderSubmit(type="button", value="取消訂單", title="確定取消訂單", onclick="userCancelOrderSubmitHandler()")
+                if ((order.status == "新訂單") || (order.status == "已調製"))
+                  input#userCancelOrderButton(type="button", value="取消", title="取消訂單", onclick="userCancelOrderHandler()")
+                  input(type="hidden", name="targetStatus", value="已取消")
+          if order.history && (order.history.length > 0)
+            tr
+              th.left.empty(colspan="6") 
+                h4 歷程：
+                ul
+                  each h in order.history
+                    li
+                      span(title=h.userId)= h.userName
+                      span= "@"+h.ctimeStr
+                      | 
+                      span= h.fromStatus
+                      span &rarr;
+                      span= h.toStatus
+                      if h.note
+                        span= " ("+h.note+")"
+    else
+      h2.errorMessage.center 沒有訂單

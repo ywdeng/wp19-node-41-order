@@ -1,0 +1,129 @@
+extends layout
+
+block content
+  form(action="/order",method="post")
+    table.menu
+      tbody
+        tr
+          th.right.empty 客戶名稱：
+          th.left.empty(colspan="7")
+            if user
+              input.fillWidth(type="text",id="custName",name="custName",readonly='true',value=user.name)
+            else
+              input.fillWidth(type="text",id="custName",name="custName",required='')
+        tr
+          th.right.empty 聯絡電話：
+          th.left.empty(colspan="7")
+            if user
+              input.fillWidth(type="tel",id="custTel",name="custTel",readonly='true',value=user.tel)
+            else
+              input.fillWidth(type="tel",id="custTel",name="custTel",required='')
+        tr
+          th.right.empty 送貨地址：
+          th.left.empty(colspan="7")
+            if user
+              input.fillWidth(type="text",id="custAddr",name="custAddr",required='true',value=user.addr)
+            else
+              input.fillWidth(type="text",id="custAddr",name="custAddr",required='')    
+        tr
+          th.menu 圖
+          th.menu 品名
+          th.menu 容量
+          th.menu 冰
+          th.menu 糖
+          th.menu 單價
+          th.menu 數量
+          th.menu 小計
+        each prod in prodList
+          tr
+            td.menu 
+              a(href=prod.pic, target="_blank") 
+                img(src=prod.pic, height="32px")
+            td.menu.center= prod.name
+            td.menu
+              input(
+                type="radio", 
+                name=prod.id+"Size", 
+                id=prod.id+"SizeS", 
+                value="S", 
+                onclick="unitPrice("+(prod.priceM-5)+",'"+prod.id+"Price','"+prod.id+"Qty','"+prod.id+"Sum')"
+              )
+              label(for=prod.id+"SizeS") 小杯(S)
+              input(
+                type="radio", 
+                name=prod.id+"Size", 
+                id=prod.id+"SizeM", 
+                value="M", 
+                checked='', 
+                onclick="unitPrice("+prod.priceM+",'"+prod.id+"Price','"+prod.id+"Qty','"+prod.id+"Sum')"
+              )
+              label(for=prod.id+"SizeM") 中杯(M)
+              input(
+                type="radio", 
+                name=prod.id+"Size", 
+                id=prod.id+"SizeL",
+                value="L", 
+                onclick="unitPrice("+prod.priceL+",'"+prod.id+"Price','"+prod.id+"Qty','"+prod.id+"Sum')"
+              )
+              label(for=prod.id+"SizeL") 大杯(L)
+              input(
+                type="radio", 
+                name=prod.id+"Size", 
+                id=prod.id+"SizeXL", 
+                value="XL", 
+                onclick="unitPrice("+(prod.priceL+5)+",'"+prod.id+"Price','"+prod.id+"Qty','"+prod.id+"Sum')"
+              )
+              label(for=prod.id+"SizeXL") 特大杯(XL)
+            td.menu
+              select(id=prod.id+"Ice", name=prod.id+"Ice")
+                option(value='0', selected='') 正常
+                option(value='1') 少冰
+                option(value='2') 去冰
+            td.menu
+              select(id=prod.id+"Sugar", name=prod.id+"Sugar")
+                option(value='0', selected='') 正常
+                option(value='1') 減糖
+                option(value='2') 微糖
+                option(value='3') 無糖
+            td.menu
+              input.right.narrowInput(
+                type="text", 
+                readonly="true", 
+                id=prod.id+"Price", 
+                name=prod.id+"Price", 
+                value=prod.priceM
+              )
+            td.menu
+              input.right.narrowInput(
+                type="number", 
+                min="0", 
+                step="1", 
+                id=prod.id+"Qty", 
+                name=prod.id+"Qty", 
+                value="0", 
+                onchange="unitSum('"+prod.id+"Price','"+prod.id+"Qty','"+prod.id+"Sum')"
+              )
+            td.menu
+              input.right.narrowInput(
+                type="text", 
+                readonly="true", 
+                id=prod.id+"Sum", 
+                name=prod.id+"Sum", 
+                value="0"
+              )
+        tr
+          td.center(colspan='6')
+            input#btnOK(type="submit", disabled='true')
+            | 
+            input(type="reset")
+            | 
+            input(type="hidden",id="Quantity",name="Quantity",value="0")
+          th.right 合計：
+          td.menu
+            input.right.narrowInput(
+              type="text", 
+              readonly="true", 
+              id="Total", 
+              name="Total", 
+              value="0"
+            )

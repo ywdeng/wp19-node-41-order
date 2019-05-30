@@ -1,0 +1,46 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/order.js')
+
+block content
+  .right
+    form(id="mainForm",action="/order",method="get")
+      if includeClosed
+        input(type="checkbox", id="includeClosed", name="includeClosed", checked=true, onchange="autoPostback()")
+      else
+        input(type="checkbox", id="includeClosed", name="includeClosed", onchange="autoPostback()")
+      label(for="includeClosed") 包含#{statusClosed}
+      | &nbsp;&nbsp;&nbsp;
+      if includeCanceled
+        input(type="checkbox", id="includeCanceled", name="includeCanceled", checked=true, onchange="autoPostback()")
+      else
+        input(type="checkbox", id="includeCanceled", name="includeCanceled", onchange="autoPostback()")
+      label(for="includeCanceled") 包含#{statusCanceled}
+
+  if orders
+    table.menu
+      tbody      
+        tr
+          th.menu 訂單編號
+          th.menu 客戶名稱
+          th.menu 訂購日期
+          th.menu 數量
+          th.menu 金額
+          th.menu 送貨地址
+          th.menu 狀態
+          th.menu
+            | 
+        each p in orders
+          tr
+            td.menu.right= p.id
+            td.menu.left= p.custName
+            td.menu.left= p.orderDateStr
+            td.menu.right= p.qty
+            td.menu.right= p.total
+            td.menu.left= p.custAddr
+            td.menu.center= p.status
+            td.menu
+              a(href="/order/" + p.id) 詳細內容
+  else
+    h2.errorMessage.center 沒有訂單            
