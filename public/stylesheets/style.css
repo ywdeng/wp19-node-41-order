@@ -29,6 +29,11 @@ td.menu {
   padding: 4px 0.5em;
 }
 
+td.box {
+  border: solid thin lightgray;
+  padding: 4px 0.5em;
+}
+
 .narrowInput {
   width: 4em;
 }

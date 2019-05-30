@@ -80,7 +80,7 @@ class OrderItemDAO extends baseClass.DAO {
         var db = this.open();
         db.run(sql, data, function (err) {
             if (err) {
-                console.error(err)
+                console.error(err);
                 if (callback) callback(err, 0);
             } else if (callback) {
                 callback(null, this.changes);
@@ -100,7 +100,7 @@ class OrderItemDAO extends baseClass.DAO {
             let data = this.toArrayWithoutId(e);
             db.run(sql, data, (err) => {
                 if (err) {
-                    console.error(err)
+                    console.error(err);
                     if (callback) callback(err, 0);
                 } else {
                     count++;

@@ -1,7 +1,8 @@
 const baseClass = require('./dao');
 const sqlite3 = require("sqlite3").verbose();
-const orderItemDAO = require('../models/order-item-dao');
-const orderHistoryDAO = require('../models/order-history-dao');
+const orderItemDAO = require('./order-item-dao');
+const orderHistoryDAO = require('./order-history-dao');
+const userDAO = require('./user-dao');
 
 const DDL_ORDERS = `
 CREATE TABLE IF NOT EXISTS Orders (
@@ -128,7 +129,7 @@ class OrderDAO extends baseClass.DAO {
         var db = this.open();
         db.run(sql, data, function (err) {
             if (err) {
-                console.error(err)
+                console.error(err);
                 if (callback) callback(err, null);
             } else if (callback) {
                 callback(null, entity);
@@ -146,7 +147,7 @@ class OrderDAO extends baseClass.DAO {
         var db = this.open();
         db.run(sql, data, function (err) {
             if (err) {
-                console.error(err)
+                console.error(err);
                 if (callback) callback(err, null);
             } else if (callback) {
                 entity.id = this.lastID;
@@ -199,6 +200,60 @@ class OrderDAO extends baseClass.DAO {
                 callback(null, entity);
             }
         });
+    }
+
+    loadReceivable(callback) {
+        var sql = "SELECT R.id AS orderId, R.custName, R.custTel, R.custAddr, R.qty, R.total, R.orderDate, R.userId, U.name as userName, R.status FROM " +
+            this.tableName + " R INNER JOIN " + userDAO.tableName + " U ON R.userId=U.id WHERE R.status='已出貨' ORDER BY userId,orderDate";
+        var db = this.open();
+        db.all(sql, [], (err, rows) => {
+            if (err) {
+                console.error(err);
+                return callback(err, null);
+            } else {
+                let list = [];
+                rows.forEach(row => {
+                    let entity = {
+                        orderId: row.orderId,
+                        custName: row.custName,
+                        custTel: row.custTel,
+                        custAddr: row.custAddr,
+                        qty: row.qty,
+                        total: row.total,
+                        orderDate: new Date(row.orderDate),
+                        orderDateStr: this.dateToString(new Date(row.orderDate)),
+                        userId: row.userId,
+                        userName: row.userName,
+                        status: row.status,
+                    };
+                    list.push(entity);
+                });
+                callback(null, list);
+            }
+        });
+        db.close();
+    }
+
+    /**
+     * 墊更訂單狀態
+     * @param {String} orderIdList comma separated list of order ids, eg. '1,2,3'
+     * @param {String} targetStatus one of the status names defined in this.STATUS
+     * @param {*} callback 
+     */
+    updateStatus(orderIdList, targetStatus, callback) {
+        var sql = "UPDATE " + this.tableName + " SET status=? WHERE id IN (" + orderIdList + ")";
+        var db = this.open();
+        db.run(sql, [targetStatus], function (err) {
+            if (err) {
+                console.error(err)
+                if (callback) callback(err, null);
+            } else if (callback) {
+                callback(null, this.changes);
+            } else {
+                console.log("Orders updates " + this.changes + " row(s), lastID is " + this.lastID + ".");
+            }
+        });
+        db.close();
     }
 }
 

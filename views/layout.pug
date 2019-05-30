@@ -24,6 +24,8 @@ html
               a.navItem(href="/order") 查看訂單
             if (user && user.isAdmin)
               | 
+              a.navItem(href="/receivable") 應收帳款
+              | 
               a.navItem(href="/user") 帳號管理
           td.nav.right
             if user

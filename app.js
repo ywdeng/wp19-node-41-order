@@ -13,6 +13,7 @@ const orderRouter = require('./routes/order');
 const loginRouter = require('./routes/login');
 const logoutRouter = require('./routes/logout');
 const userRouter = require('./routes/user');
+const receivableRouter = require('./routes/receivable');
 const apiRouter = require('./routes/api');
 
 const rememberMe = require('./remember-me');
@@ -45,6 +46,7 @@ app.use('/order', orderRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/user', userRouter);
+app.use('/receivable', receivableRouter);
 app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler

@@ -4,7 +4,7 @@ const sqlite3 = require("sqlite3").verbose();
 const DDL_SESSIONS = `
 CREATE TABLE IF NOT EXISTS Sessions (
     sessionID TEXT NOT NULL PRIMARY KEY,
-    userID TEXT NOT NULL, 
+    userId TEXT NOT NULL, 
     userName TEXT NOT NULL, 
     remoteAddress TEXT NOT NULL, 
     login INTEGER NOT NULL, 
@@ -25,6 +25,14 @@ class SessionDAO extends baseClass.DAO {
                 console.log("Table " + this.tableName + " OK.");
             });
         });
+    }
+
+    get sessionTimeout() {
+        return Number(1800000); /* 30 minutes */
+    }
+
+    get checkPeriod() {
+        return Number(28800000); /* prune expired entries every 8h */
     }
 
     mapper(row) {
@@ -87,7 +95,7 @@ class SessionDAO extends baseClass.DAO {
     }
 
     countOpened(callback) {
-        var sql = 'SELECT COUNT(*) AS NUM FROM ' + this.tableName + ' WHERE logout < 1';
+        var sql = 'SELECT COUNT(DISTINCT userId) AS NUM FROM ' + this.tableName + ' WHERE logout < 1';
         var db = this.open();
         db.get(sql, [], (err, row) => {
             if (err) {
@@ -158,20 +166,25 @@ class SessionDAO extends baseClass.DAO {
         db.close();
     }
 
+    /**
+     * Clean up obsolete sessions
+     * @param {*} callback 
+     */
     cleanup(callback) {
-        var now = new Date();
+        var closePeriod = Date.now() - this.sessionTimeout;
+        var deletePeriod = Date.now() - this.checkPeriod;
         var sql = "UPDATE " + this.tableName + " SET logout=? WHERE lastTouch<?";
         var db = this.open();
-        db.run(sql, [now.valueOf() - this.sessionTimeout], function (err) {
+        db.run(sql, [Date.now(), closePeriod], function (err) {
             if (err) {
                 console.error(err)
                 if (callback) callback(err, 0);
             } else {
                 console.log("Closes " + this.changes + " session(s).");
-                sql = "DELETE FROM " + this.tableName + " WHERE lastTouch<?";
-                db.run(sql, [now.valueOf() - this.checkPeriod], function (err1) {
+                sql = "DELETE FROM Sessions WHERE lastTouch<?";
+                db.run(sql, [deletePeriod], function (err1) {
                     if (err1) {
-                        console.error(err)
+                        console.error(err1)
                         if (callback) callback(err1, 0);
                     } else if (callback) {
                         callback(null, 0);
@@ -182,14 +195,6 @@ class SessionDAO extends baseClass.DAO {
             }
         });
         db.close();
-    }
-
-    get sessionTimeout() {
-        return 1800000; // 30 minutes
-    }
-
-    get checkPeriod() {
-        return 86400000; // prune expired entries every 24h
     }
 }
 

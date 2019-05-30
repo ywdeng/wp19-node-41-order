@@ -98,7 +98,7 @@ class OrderHistoryDAO extends baseClass.DAO {
         var db = this.open();
         db.run(sql, data, function (err) {
             if (err) {
-                console.error(err)
+                console.error(err);
                 if (callback) callback(err, 0);
             } else if (callback) {
                 callback(null, this.changes);

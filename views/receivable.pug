@@ -1,0 +1,53 @@
+extends layout
+
+block scripts
+  script(src='/javascripts/receivable.js')
+
+block content
+  form(id="mainForm",action="/receivable/payoff",method="post")
+    input#orderIdList(type="hidden", name="orderIdList")
+
+  if receivables
+    h2.center 應收帳款
+    table.menu
+      tbody      
+        tr
+          th.menu 客戶編號
+          th.menu 客戶名稱
+          th.menu 應收金額
+          th.menu 聯絡電話
+          th.menu 送貨地址
+          th.menu
+            | 
+        each p in receivables
+          -
+            var orderIds = "" + p.orders[0].orderId;
+            for (let i = 1; i < p.orders.length; i++) orderIds += "," + p.orders[i].orderId;
+          tr
+            td.menu.left= p.userId
+            td.menu.left= p.userName
+            td.menu.right= p.amount
+            td.menu.left= p.custTel
+            td.menu.left= p.custAddr
+            td.menu
+              a(href="#", onclick="showOrderList('tr"+p.userId+"')") 訂單
+              | 
+              a(href="#", onclick="payOff('"+p.userId+"','"+p.userName+"',"+p.amount+",'"+orderIds+"')") 結清
+          tr.hidden(id="tr"+p.userId)
+            td
+            td.box(colspan="4")
+              table.fillWidth
+                tr
+                  th.menu 訂單編號
+                  th.menu 訂購日期
+                  th.menu 數量
+                  th.menu 金額
+                each r in p.orders
+                  tr
+                    td.menu.right= r.orderId
+                    td.menu.center= r.orderDateStr
+                    td.menu.right= r.qty
+                    td.menu.right= r.total
+
+  else
+    h2.errorMessage.center 沒有應收帳款          
